@@ -86,34 +86,6 @@ class KinematicsAnimationState extends State<KinematicsAnimation>
   }
 
 
-  // @override
-  // void deactivate(){
-  //   super.deactivate();
-  //   controller.stop();
-
-  // }
-
-
-  
-
-
-  // woo() {
-
-  //   switch (widget.playerControl) {
-  //     case "play":
-  //       controller.forward();
-  //       break;
-  //     case "pause":
-  //       // controller.value = widget.valuePercent;
-  //       controller.stop();
-  //       break;
-  //     case "reset":
-  //       controller.animateTo(0.0, duration: Duration(milliseconds: 1));
-  //       break;
-  //     default:
-  //   }
-  
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -163,7 +135,6 @@ class KinematicsAnimationState extends State<KinematicsAnimation>
       // ),
       builder: (BuildContext context, Widget? child)  {
 
-        // Get.put(PruebasModel2() ).animationPercent.value = controller.value;
         return Transform.translate(
           offset: Offset(positionX, -positionY),
           child: child,
@@ -177,10 +148,7 @@ class KinematicsAnimationState extends State<KinematicsAnimation>
       (-sqrt(pow(velocityY, 2) + (2 * gravity * -height)) - velocityY) /
       gravity;
 
-  // double _round(double value, int decimals) {
-  //   int fac = pow(10, decimals);
-  //   return (value * fac).round() / fac;
-  // }
+
 
   @override
   void dispose() {

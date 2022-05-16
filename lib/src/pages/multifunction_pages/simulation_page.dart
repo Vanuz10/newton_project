@@ -46,7 +46,7 @@ class _SimulationPageState extends State<SimulationPage> {
 
   @override
   Widget build(BuildContext context) {
-    if (physicsCtrl.animationController != null) {
+    if (physicsCtrl.canSimulate == true) {
       physicsCtrl.animationController.addListener(() {
       setState(() {
         

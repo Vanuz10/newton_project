@@ -70,6 +70,7 @@ abstract class PhysicsController {
 
 class ParabolicMotionController extends PhysicsController{
   ParabolicMotionController({required BuildContext context}) : super(context: context);
+  
   @override
   Map parameters = {
     "voy": {"label": "v", "subLabel": "oy", "units": "m/s", "value": "", "readOnly": false, },
