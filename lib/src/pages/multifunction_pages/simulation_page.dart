@@ -21,38 +21,27 @@ class _SimulationPageState extends State<SimulationPage> {
   // static const subLabelTextStyle = TextStyle(fontFamily: "Roboto Light", fontSize: 12);
   static const unitsTextStyle = TextStyle(fontFamily: "Roboto Thin", fontSize: 12);
 
-  late int cursorOffset;
 
   late bool isLarge;
 
   late PhysicsController physicsCtrl;
 
-  dynamic dropDownSelection;
 
-  late String text;
 
   @override
   void initState() {
     super.initState();
     // isLarge = MediaQuery.of(context).orientation == Orientation.portrait;
-    cursorOffset = 0;
-    text = "";
     isLarge = true;
     physicsCtrl = widget.controller;
-    dropDownSelection = physicsCtrl.sliders.keys.first;
+    
+    
 
 
   }
 
   @override
   Widget build(BuildContext context) {
-    if (physicsCtrl.canSimulate == true) {
-      physicsCtrl.animationController.addListener(() {
-      setState(() {
-        
-      });
-     });
-    }
     return Scaffold(
       // resizeToAvoidBottomInset: false,
       body: ListView(
@@ -77,48 +66,7 @@ class _SimulationPageState extends State<SimulationPage> {
             child: Center(
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 20.0,),
-                child: Column(
-                  // mainAxisAlignment: MainAxisAlignment.center,
-                  // crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        const Text(
-                          "Parameter:",
-                          style: TextStyle(
-                            fontFamily: "Roboto Light",
-                            fontSize: 18.0,
-                          ),
-                        ),
-                        RectangleContainerFormat(
-                          // width: 300,
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 15.0,),
-                            child: DropdownButton(
-                              underline: const SizedBox(),
-                              icon: const Icon(Icons.arrow_drop_down_rounded),
-                              iconSize: 30,
-                              // menuMaxHeight: 100.0,
-                              onChanged: (value){
-                                setState(() {
-                                  dropDownSelection = value;
-                                  
-                                });
-                              },
-                              value: dropDownSelection,
-                              items: physicsCtrl.sliders.keys.map((key) => 
-                                DropdownMenuItem(child: Text(key), value: key,),
-                              ).toList()
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 20,),
-                    _getSlider(widget.focusedColor, physicsCtrl),
-                  ],
-                ),
+                child: ParameterController(controller: physicsCtrl)
               ),
             ),
           ),
@@ -130,125 +78,6 @@ class _SimulationPageState extends State<SimulationPage> {
   
   }
 
-
-  Widget _getSlider(Color focusedColor, PhysicsController physicsCtrl) {
-
-    // print(physicsCtrl.animationController.isAnimating);
-    // if(physicsCtrl.animationController.isAnimating){
-    //   setState(() {
-        
-    //   });
-    // }
-    TextEditingControllerWorkaroud textEditingController = TextEditingControllerWorkaroud(text: '');
-    textEditingController.text = text;
-    // textEditingController.text = physicsCtrl.sliders[dropDownSelection]["value"].toString();
-    textEditingController.setTextAndPosition(text, caretPosition: cursorOffset);
-
-    
-    Widget slider = Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      // mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Flexible(
-          flex: 2,
-          child: Slider(
-            value: physicsCtrl.sliders[dropDownSelection]["value"],
-            min: physicsCtrl.sliders[dropDownSelection]["min"], 
-            max: physicsCtrl.sliders[dropDownSelection]["max"], 
-            onChangeStart: (_){
-              // FocusScope.of(context).unfocus();
-            },
-            onChanged: (!physicsCtrl.canSimulate)?null:(valueSlider){
-              
-              setState(() {
-                physicsCtrl.valueSlider(dropDownSelection, valueSlider);
-              });
-        
-            },
-            activeColor: focusedColor,
-            inactiveColor: focusedColor.withOpacity(.5)
-          ),
-        ),
-        Flexible(
-          flex: 1,
-          child: SizedBox(
-            width: 120,
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    
-                    controller: textEditingController,
-                    maxLines: 1,
-                    scrollPhysics: const BouncingScrollPhysics(),
-                    style: const TextStyle(
-                      fontSize: 14
-        
-                    ),
-                    onTap: (){
-                      cursorOffset = textEditingController.selection.base.offset;
-                      // textEditingController.text = "";
-                    },
-                    onEditingComplete: (){
-                      setState(() {
-                        text = "";
-                        cursorOffset =0;
-                      });
-                    },
-                    onSubmitted: (newValue){
-                      physicsCtrl.valueText(dropDownSelection, newValue);
-                      setState(() {
-                        text = "";
-                        
-                        cursorOffset =0;
-                      });
-                    },
-                    onChanged: (newValue)async{
-                      
-                      cursorOffset = textEditingController.selection.base.offset;
-                      text = newValue;
-                      // physicsCtrl.valueText(dropDownSelection, newValue);
-                      
-                      setState(() {});
-                    
-                    },
-                    readOnly: true, 
-                    // physicsCtrl.animationController.isAnimating,
-                    enabled: physicsCtrl.canSimulate,
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                      hintText: physicsCtrl.sliders[dropDownSelection]["value"].toString(),
-                      // alignLabelWithHint: true,
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: focusedColor, width: 2.0),
-                        borderRadius: BorderRadius.circular(16)
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(16)
-                      ),
-        
-                    ),
-                  ),
-                ),
-                Container(
-                  alignment: Alignment.center,
-                  width: 0.25*120,
-                  child:Text(
-                    physicsCtrl.sliders[dropDownSelection]["units"],
-                    style: unitsTextStyle
-        
-                  )
-                ),
-              ],
-        
-            )
-            ),
-          )
-        ],
-    );
-
-    return slider;
-  }
 
 
   Widget simulation() {
@@ -367,19 +196,6 @@ class _SimulationPageState extends State<SimulationPage> {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
   // _getChildren(BuildContext context, physicsModel, isLarge, size) {
   //   if(isLarge){
   //   return [
@@ -427,4 +243,226 @@ class _SimulationPageState extends State<SimulationPage> {
 
 
   // }
+}
+
+
+
+
+class ParameterController extends StatefulWidget {
+  final PhysicsController controller;
+  const ParameterController({ Key? key, required this.controller }) : super(key: key);
+
+  @override
+  State<ParameterController> createState() => _ParameterControllerState();
+}
+
+class _ParameterControllerState extends State<ParameterController> {
+
+  late bool isLarge;
+
+
+  static const unitsTextStyle = TextStyle(fontFamily: "Roboto Thin", fontSize: 12);
+
+  late int cursorOffset;
+
+  late PhysicsController physicsCtrl;
+
+  dynamic dropDownSelection;
+
+  late String text;
+
+
+  @override
+  void initState() {
+    physicsCtrl = widget.controller;
+    cursorOffset = 0;
+    text = "";
+    isLarge = true;
+    dropDownSelection = physicsCtrl.sliders.keys.first;
+
+    
+
+
+
+    // TODO: implement initState
+    super.initState();
+  }
+
+
+  @override
+  Widget build(BuildContext context) {
+    if (physicsCtrl.canSimulate == true) {
+      physicsCtrl.animationController?.addListener(() {
+      setState(() {
+        
+      });
+     });
+    }
+    return Column(
+      // mainAxisAlignment: MainAxisAlignment.center,
+      // crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            const Text(
+              "Parameter:",
+              style: TextStyle(
+                fontFamily: "Roboto Light",
+                fontSize: 18.0,
+              ),
+            ),
+            RectangleContainerFormat(
+              // width: 300,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15.0,),
+                child: DropdownButton(
+                  underline: const SizedBox(),
+                  icon: const Icon(Icons.arrow_drop_down_rounded),
+                  iconSize: 30,
+                  // menuMaxHeight: 100.0,
+                  onChanged: (value){
+                    setState(() {
+                      dropDownSelection = value;
+                      
+                    });
+                  },
+                  value: dropDownSelection,
+                  items: physicsCtrl.sliders.keys.map((key) => 
+                    DropdownMenuItem(child: Text(key), value: key,),
+                  ).toList()
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 20,),
+        _getSlider(Colors.amber, physicsCtrl),
+      ],
+    );
+  }
+
+  
+  Widget _getSlider(Color focusedColor, PhysicsController physicsCtrl) {
+
+    // print(physicsCtrl.animationController.isAnimating);
+    // if(physicsCtrl.animationController.isAnimating){
+    //   setState(() {
+        
+    //   });
+    // }
+    TextEditingControllerWorkaroud textEditingController = TextEditingControllerWorkaroud(text: '');
+    textEditingController.text = text;
+    // textEditingController.text = physicsCtrl.sliders[dropDownSelection]["value"].toString();
+    textEditingController.setTextAndPosition(text, caretPosition: cursorOffset);
+
+    
+    Widget slider = Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      // mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Flexible(
+          flex: 2,
+          child: Slider(
+            value: physicsCtrl.sliders[dropDownSelection]["value"],
+            min: physicsCtrl.sliders[dropDownSelection]["min"], 
+            max: physicsCtrl.sliders[dropDownSelection]["max"], 
+            onChangeStart: (_){
+              // FocusScope.of(context).unfocus();
+            },
+            onChanged: (!physicsCtrl.canSimulate)?null:(valueSlider){
+              
+              setState(() {
+                physicsCtrl.valueSlider(dropDownSelection, valueSlider);
+              });
+        
+            },
+            activeColor: focusedColor,
+            inactiveColor: focusedColor.withOpacity(.5)
+          ),
+        ),
+        Flexible(
+          flex: 1,
+          child: SizedBox(
+            width: 120,
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    
+                    controller: textEditingController,
+                    maxLines: 1,
+                    scrollPhysics: const BouncingScrollPhysics(),
+                    style: const TextStyle(
+                      fontSize: 14
+        
+                    ),
+                    onTap: (){
+                      cursorOffset = textEditingController.selection.base.offset;
+                      // textEditingController.text = "";
+                    },
+                    onEditingComplete: (){
+                      setState(() {
+                        text = "";
+                        cursorOffset =0;
+                      });
+                    },
+                    onSubmitted: (newValue){
+                      physicsCtrl.valueFromText(dropDownSelection, newValue);
+                      setState(() {
+                        text = "";
+                        
+                        cursorOffset =0;
+                      });
+                    },
+                    onChanged: (newValue)async{
+                      
+                      cursorOffset = textEditingController.selection.base.offset;
+                      text = newValue;
+                      // physicsCtrl.valueText(dropDownSelection, newValue);
+                      
+                      setState(() {});
+                    
+                    },
+                    readOnly: !physicsCtrl.canSimulate, 
+                    // physicsCtrl.animationController.isAnimating,
+                    enabled: physicsCtrl.canSimulate,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      hintText: physicsCtrl.sliders[dropDownSelection]["value"].toString(),
+                      // alignLabelWithHint: true,
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: focusedColor, width: 2.0),
+                        borderRadius: BorderRadius.circular(16)
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(16)
+                      ),
+        
+                    ),
+                  ),
+                ),
+                Container(
+                  alignment: Alignment.center,
+                  width: 0.25*120,
+                  child:Text(
+                    physicsCtrl.sliders[dropDownSelection]["units"],
+                    style: unitsTextStyle
+        
+                  )
+                ),
+              ],
+        
+            )
+            ),
+          )
+        ],
+    );
+
+    return slider;
+  }
+
+
+
+
 }

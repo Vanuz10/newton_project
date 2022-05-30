@@ -4,8 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class KinematicsAnimation extends StatefulWidget {
-  // final String playerControl;
-  // final double animationPercent;
+
   final Function(bool isDisposed)? update;
   final double velocityX;
   final double velocityY;
@@ -14,8 +13,6 @@ class KinematicsAnimation extends StatefulWidget {
 
   const KinematicsAnimation({
     Key? key,
-    // this.playerControl,
-    // this.animationPercent,
     this.velocityX = 0.0,
     this.velocityY = 0.0,
     this.height = 0.0,
@@ -24,21 +21,15 @@ class KinematicsAnimation extends StatefulWidget {
   }) : super(key: key);
 
 
-  // double _animationPercentListeneable;
-  // set animationPercentListeneable(double animationPercentListeneable){
-  //   this._animationPercentListeneable = animationPercentListeneable;
-  // }
-  // double get animationPercentListeneable => this._animationPercentListeneable;
-
   @override
   KinematicsAnimationState createState() => KinematicsAnimationState();
-
 
 
 }
 
 class KinematicsAnimationState extends State<KinematicsAnimation>
     with SingleTickerProviderStateMixin {
+
   late AnimationController controller;
   double animationPercent = 0.0;
 
@@ -51,7 +42,10 @@ class KinematicsAnimationState extends State<KinematicsAnimation>
   double magVelocity = 0.0;
   
    
-
+  // double _round(double value, int decimals) {
+  //   num fac = pow(10, decimals);
+  //   return (value * fac).round() / fac;
+  // }
 
   @override
   void initState() {
@@ -89,52 +83,41 @@ class KinematicsAnimationState extends State<KinematicsAnimation>
 
   @override
   Widget build(BuildContext context) {
-    
-
-    // woo();
-
+    print("build");
     return AnimatedBuilder(
       animation: controller,
-      child: 
-      // Row(
-      //   children: <Widget>[
-          Stack(
-            children: [
-              SizedBox(
-                // color:Colors.yellow,
-                width: 0.25 * widget.factor + 2,
-                height: 0.25 * widget.factor + 2,
+      child: Stack(
+        children: [
+          SizedBox(
+            width: 0.25 * widget.factor + 2,
+            height: 0.25 * widget.factor + 2,
+          ),
+          Positioned(
+            top: 2,
+            child: ImageFiltered(
+              imageFilter: ImageFilter.blur(
+                tileMode:  TileMode.decal,
+                sigmaX: 1.0,
+                sigmaY: 1.0,
+              
               ),
-              Positioned(
-                left: 2,
-                top: 2,
-                child: ImageFiltered(
-                  imageFilter: ImageFilter.blur(
-                    sigmaX: 4, sigmaY: 4
-                  ),
-                  child: SvgPicture.asset(
-                    bolitaFileName,
-                    width: 0.25 * widget.factor,
-                    color: Colors.black.withOpacity(0.25)
-                  ),
-                ),
-              ),
-              SvgPicture.asset(
+              child: SvgPicture.asset(
                 bolitaFileName,
                 width: 0.25 * widget.factor,
+                color: Colors.black.withOpacity(0.25)
               ),
-            ],
+            ),
           ),
-          // Text(
-          //   "v= $magVelocity m/s",
-          //   style: TextStyle(
-          //     fontFamily: "Roboto Light",
-          //   ),
-          // ),
-      //   ],
-      // ),
+          Positioned(
+            left: 2,
+            child: SvgPicture.asset(
+              bolitaFileName,
+              width: 0.25 * widget.factor,
+            ),
+          ),
+        ],
+      ),
       builder: (BuildContext context, Widget? child)  {
-
         return Transform.translate(
           offset: Offset(positionX, -positionY),
           child: child,

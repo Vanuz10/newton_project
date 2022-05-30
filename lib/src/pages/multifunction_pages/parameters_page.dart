@@ -147,6 +147,9 @@ class _ParametersPageState extends State<ParametersPage> {
         _inputField(labelText: value["label"], subLabelText: value["subLabel"], units: value["units"], focusedColor: focusedColor, physicsCtrl: physicsCtrl,),
       );
      });
+    //  physicsCtrl.parameters.values.map((value) =>inputFields.add(
+    //     _inputField(labelText: value["label"], subLabelText: value["subLabel"], units: value["units"], focusedColor: focusedColor, physicsCtrl: physicsCtrl,),
+    //   ));
     return inputFields;
   }
 

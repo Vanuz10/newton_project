@@ -17,7 +17,7 @@ abstract class PhysicsController {
   bool get canSetState;
 
 
-  AnimationController get animationController;
+  AnimationController? get animationController;
   double get animationPercent;
 
   double get factor;
@@ -51,18 +51,20 @@ abstract class PhysicsController {
   
   void resetAll(){}
 
+
   
 
 
   // void updateAnimation(){}
-  
+  void updateAnimationPercent(bool isDisposed){}
+
   void controlAnimation(String playerControl){}
 
   void createSliders(){}
 
   void valueSlider(String parameter, double newValue){}
 
-  void valueText(String parameter, String value){}
+  void valueFromText(String parameter, String value){}
 
 
 }
@@ -95,7 +97,7 @@ class ParabolicMotionController extends PhysicsController{
   
   GlobalKey<KinematicsAnimationState> key = GlobalKey();
   @override
-  late AnimationController animationController;
+  AnimationController? animationController;
   @override
   double animationPercent = 0.0;
   @override
@@ -170,8 +172,6 @@ class ParabolicMotionController extends PhysicsController{
 
   };
   
-  
-
 
   @override
   void resetAll(){
@@ -259,7 +259,6 @@ class ParabolicMotionController extends PhysicsController{
 
   void updateAnimation(){
     
-  //  playerControl = newPlayerControl;
     animation = KinematicsAnimation(
       update: updateAnimationPercent,
       key: key,
@@ -268,19 +267,16 @@ class ParabolicMotionController extends PhysicsController{
       height: double.parse(parameters["ho"]["value"]),
       factor: factor,
     );
-
-  //  if(animationController != null){
-  //     animationController = key.currentState.controller;
-  //   }
  }
 
 
+  @override
   void updateAnimationPercent(bool isDisposed){
     if(isDisposed == true){
       animationPercent = 0;
       playerControl = "pause";
     }else{
-      animationPercent = animationController.value;
+      animationPercent = animationController!.value;
     }
     updateSliders(false);
   }
@@ -304,24 +300,20 @@ class ParabolicMotionController extends PhysicsController{
 
   @override
   void controlAnimation(String playerControl){
-    //  revisar si esto es redundante xd
-    // if(animationController == null){
-    animationController = key.currentState!.controller;
-    // }
 
-    // animationPercent = key.currentState.animationPercent;
-    // print(animationPercent);
+    animationController = key.currentState?.controller;
+
     playerControl = playerControl;
     switch (playerControl) {
       case "play":
-        animationController.forward();
+        animationController?.forward();
         break;
       case "pause":
         // controller.value = widget.valuePercent;
-        animationController.stop();
+        animationController?.stop();
         break;
       case "reset":
-        animationController.reset();
+        animationController?.reset();
         break;
       default:
     }
@@ -335,21 +327,21 @@ class ParabolicMotionController extends PhysicsController{
   @override
   void valueSlider(String parameter, double newValue){
     controlAnimation("pause");
-    animationController.value = newValue/sliders[parameter]["max"];
+    animationController?.value = newValue/sliders[parameter]["max"];
 
   }
 
   @override
-  void valueText(String parameter, String value){
+  void valueFromText(String parameter, String value){
     controlAnimation("pause");
     if (value.isEmpty) {
-      animationController.value = 0.0;
+      animationController?.value = 0.0;
     }
     else if(double.parse(value) > sliders[parameter]["max"]){
-      animationController.value = 1.0;
+      animationController?.value = 1.0;
 
     }else{
-      animationController.value = double.parse(value)/sliders[parameter]["max"];
+      animationController?.value = double.parse(value)/sliders[parameter]["max"];
     }
 
   }

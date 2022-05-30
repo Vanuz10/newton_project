@@ -20,12 +20,14 @@ class OptionPage extends StatelessWidget {
     return Scaffold(
       
       appBar: AppBar(
+        elevation: 0,
         toolbarHeight: (isLarge)?75:null,
         title: Text(
           infoCardModel.title,
           style: TextStyle(
             fontFamily: "Roboto Light",
-            color: Theme.of(context).canvasColor,
+            // color: Theme.of(context).canvasColor
+            color: Theme.of(context).textTheme.bodyText1?.color,
             fontSize: 28.0,
           ),
           textAlign: TextAlign.center,
@@ -35,11 +37,13 @@ class OptionPage extends StatelessWidget {
           padding: const EdgeInsets.all(8.0),
           child: _leading(),
         ),
-        backgroundColor: infoCardModel.color,
+        // backgroundColor: infoCardModel.color,
+        backgroundColor: Theme.of(context).canvasColor,
       ),
       body: Center(
         child: Column(
           children: <Widget>[
+            const Divider(height: 1,thickness: 0.5,),
             Expanded(
               child: GenerateCards(cardsInfo: infoCardModel.optionsMap, ),
             ),
@@ -67,7 +71,8 @@ class OptionPage extends StatelessWidget {
             child: Icon(
             Icons.arrow_back_rounded,
               size: 32,
-              color: Theme.of(context).canvasColor,
+              // color: Theme.of(context).canvasColor
+              color: Colors.black.withOpacity(0.4),
             )
           ),
         );
